@@ -906,7 +906,7 @@
     <div class="reel-portrait-wrap">
       <div class="reel-portrait-inner">
         <iframe
-          src="https://player.vimeo.com/video/1203705458?autoplay=1&loop=1&muted=1&title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
+          src="https://player.vimeo.com/video/1203705458?autoplay=0&loop=1&muted=0&title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
           allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
           title="Cinematic Vertical Reel"
         ></iframe>
@@ -927,7 +927,7 @@
     <div class="reel-landscape-label">Cinematic Feature — 16:9</div>
     <div class="reel-landscape-wrap">
       <iframe
-        src="https://player.vimeo.com/video/1201714638?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
+        src="https://player.vimeo.com/video/1203826767?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
         allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
         title="Cinematic Landscape Feature"
       ></iframe>
@@ -968,7 +968,7 @@
     <div class="gallery-item tall">
       <div class="gal-video-wrap" style="padding-bottom:151%">
         <iframe
-          src="https://player.vimeo.com/video/1198050577?autoplay=1&loop=1&muted=1&title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
+          src="https://player.vimeo.com/video/1203867034?autoplay=1&loop=1&muted=1&title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
           allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
           title="Your Best Shot — Property Exterior / Hero Shot"
         ></iframe>
@@ -1004,7 +1004,7 @@
     <div class="gallery-item">
       <div class="gal-video-wrap">
         <iframe
-          src="https://player.vimeo.com/video/1203725540?autoplay=1&loop=1&muted=1&title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
+          src="https://player.vimeo.com/video/1201697743?autoplay=1&loop=1&muted=1&title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
           allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
           title="Aerial / Exterior"
         ></iframe>
@@ -1163,6 +1163,48 @@
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
   reveals.forEach(el => observer.observe(el));
+</script>
+
+<!-- Vimeo player quality control: prefer qualities between 1080p and 4k -->
+<script src="https://player.vimeo.com/api/player.js"></script>
+<script>
+  (function() {
+    var iframe = document.querySelector('.reel-landscape-wrap iframe');
+    if (!iframe) return;
+    var player = new Vimeo.Player(iframe);
+
+    // Attempt to pick the best quality within 1080p—2160p (4k).
+    player.ready().then(function() {
+      if (typeof player.getQualities === 'function') {
+        player.getQualities().then(function(qualities) {
+          try {
+            // Normalize quality labels
+            var labels = qualities.map(function(q) {
+              if (typeof q === 'string') return q;
+              return q.quality || q.label || q.name || (q.height ? q.height + 'p' : null);
+            }).filter(Boolean);
+
+            // Preferred order: 2160p, 1440p, 1080p
+            var preferredOrder = ['2160p', '1440p', '1080p'];
+            var chosen = labels.find(function(l) { return preferredOrder.indexOf(l) !== -1; });
+            if (chosen && typeof player.setQuality === 'function') {
+              player.setQuality(chosen).catch(function(){});
+            }
+          } catch (e) {}
+        }).catch(function() {
+          // ignore
+        });
+      } else {
+        // Fallback: request 1080p via URL param (best-effort)
+        try {
+          var src = iframe.getAttribute('src') || '';
+          if (src.indexOf('quality=') === -1) {
+            iframe.setAttribute('src', src + (src.indexOf('?') === -1 ? '?' : '&') + 'quality=1080p');
+          }
+        } catch (e) {}
+      }
+    }).catch(function(){});
+  })();
 </script>
 
 </body>
