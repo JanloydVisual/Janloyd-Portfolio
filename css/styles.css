@@ -952,13 +952,17 @@
   border-radius: 50%;
   pointer-events: none;
   z-index: 10000;
-  transform: translate(-50%, -50%);
-  transition: width 0.3s, height 0.3s, background-color 0.3s;
+  margin-left: -10px;
+  margin-top: -10px;
+  transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease, opacity 0.2s ease;
   mix-blend-mode: difference;
+  will-change: transform;
 }
 .custom-cursor.hover {
   width: 50px;
   height: 50px;
+  margin-left: -25px;
+  margin-top: -25px;
   background-color: rgba(138, 154, 91, 0.2);
 }
 

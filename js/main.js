@@ -106,24 +106,55 @@ if (cursor && !isTouchDevice) {
   // Mobile: cursor hidden by default, appears on touch, disappears on release
   cursor.style.display = 'none';
 
-  // Show and move cursor while touching
+  let targetX = 0;
+  let targetY = 0;
+  let currentX = 0;
+  let currentY = 0;
+  let isTouching = false;
+  let animationId = null;
+
+  const animateCursor = () => {
+    currentX += (targetX - currentX) * 0.2;
+    currentY += (targetY - currentY) * 0.2;
+    cursor.style.transform = `translate(${currentX}px, ${currentY}px)`;
+    if (isTouching || Math.abs(targetX - currentX) > 0.5 || Math.abs(targetY - currentY) > 0.5) {
+      animationId = requestAnimationFrame(animateCursor);
+    } else {
+      animationId = null;
+    }
+  };
+
   document.addEventListener('touchstart', (e) => {
     cursor.style.display = 'block';
+    cursor.style.opacity = '1';
     const touch = e.touches[0];
-    cursor.style.left = touch.clientX + 'px';
-    cursor.style.top = touch.clientY + 'px';
+    targetX = touch.clientX;
+    targetY = touch.clientY;
+    currentX = targetX;
+    currentY = targetY;
+    cursor.style.transform = `translate(${currentX}px, ${currentY}px)`;
+    isTouching = true;
+    if (!animationId) animateCursor();
   });
 
   document.addEventListener('touchmove', (e) => {
     const touch = e.touches[0];
-    cursor.style.left = touch.clientX + 'px';
-    cursor.style.top = touch.clientY + 'px';
+    targetX = touch.clientX;
+    targetY = touch.clientY;
+    if (!animationId) animateCursor();
   });
 
-  // Hide cursor when touch ends
   document.addEventListener('touchend', () => {
-    cursor.style.display = 'none';
+    isTouching = false;
+    cursor.style.opacity = '0';
     cursor.classList.remove('hover');
+    setTimeout(() => {
+      if (!isTouching) cursor.style.display = 'none';
+    }, 200);
+    if (animationId) {
+      cancelAnimationFrame(animationId);
+      animationId = null;
+    }
   });
 
   // Bigger cursor when tapping interactive elements
