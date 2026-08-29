@@ -114,10 +114,12 @@ if (cursor && !isTouchDevice) {
   let animationId = null;
 
   const animateCursor = () => {
-    currentX += (targetX - currentX) * 0.2;
-    currentY += (targetY - currentY) * 0.2;
+    // Faster lerp for more responsive feel
+    currentX += (targetX - currentX) * 0.35;
+    currentY += (targetY - currentY) * 0.35;
     cursor.style.transform = `translate(${currentX}px, ${currentY}px)`;
-    if (isTouching || Math.abs(targetX - currentX) > 0.5 || Math.abs(targetY - currentY) > 0.5) {
+    // Always keep animating while touching
+    if (isTouching) {
       animationId = requestAnimationFrame(animateCursor);
     } else {
       animationId = null;
@@ -130,6 +132,7 @@ if (cursor && !isTouchDevice) {
     const touch = e.touches[0];
     targetX = touch.clientX;
     targetY = touch.clientY;
+    // Snap to position on first touch
     currentX = targetX;
     currentY = targetY;
     cursor.style.transform = `translate(${currentX}px, ${currentY}px)`;
@@ -141,6 +144,7 @@ if (cursor && !isTouchDevice) {
     const touch = e.touches[0];
     targetX = touch.clientX;
     targetY = touch.clientY;
+    // Always ensure animation is running during touch
     if (!animationId) animateCursor();
   });
 
@@ -149,7 +153,7 @@ if (cursor && !isTouchDevice) {
     cursor.style.opacity = '0';
     cursor.classList.remove('hover');
     setTimeout(() => {
-      if (!isTouching) cursor.style.display = 'none';
+      cursor.style.display = 'none';
     }, 200);
     if (animationId) {
       cancelAnimationFrame(animationId);
