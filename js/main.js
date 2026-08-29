@@ -87,10 +87,11 @@ window.addEventListener('load', () => {
 });
 
 // ── CUSTOM CURSOR ──
-// Only enable custom cursor on non-touch (desktop) devices
 const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 const cursor = document.querySelector('.custom-cursor');
+
 if (cursor && !isTouchDevice) {
+  // Desktop: cursor follows mouse, shows on hover elements
   document.addEventListener('mousemove', (e) => {
     cursor.style.left = e.clientX + 'px';
     cursor.style.top = e.clientY + 'px';
@@ -102,7 +103,35 @@ if (cursor && !isTouchDevice) {
     el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
   });
 } else if (cursor && isTouchDevice) {
+  // Mobile: cursor hidden by default, appears on touch, disappears on release
   cursor.style.display = 'none';
+
+  // Show and move cursor while touching
+  document.addEventListener('touchstart', (e) => {
+    cursor.style.display = 'block';
+    const touch = e.touches[0];
+    cursor.style.left = touch.clientX + 'px';
+    cursor.style.top = touch.clientY + 'px';
+  });
+
+  document.addEventListener('touchmove', (e) => {
+    const touch = e.touches[0];
+    cursor.style.left = touch.clientX + 'px';
+    cursor.style.top = touch.clientY + 'px';
+  });
+
+  // Hide cursor when touch ends
+  document.addEventListener('touchend', () => {
+    cursor.style.display = 'none';
+    cursor.classList.remove('hover');
+  });
+
+  // Bigger cursor when tapping interactive elements
+  const touchHoverElements = document.querySelectorAll('a, button, .ba-slider, .btn-primary, .btn-ghost');
+  touchHoverElements.forEach(el => {
+    el.addEventListener('touchstart', () => cursor.classList.add('hover'));
+    el.addEventListener('touchend', () => cursor.classList.remove('hover'));
+  });
 }
 
 // ── BEFORE/AFTER SLIDER ──
