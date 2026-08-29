@@ -87,8 +87,10 @@ window.addEventListener('load', () => {
 });
 
 // ── CUSTOM CURSOR ──
+// Only enable custom cursor on non-touch (desktop) devices
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 const cursor = document.querySelector('.custom-cursor');
-if (cursor) {
+if (cursor && !isTouchDevice) {
   document.addEventListener('mousemove', (e) => {
     cursor.style.left = e.clientX + 'px';
     cursor.style.top = e.clientY + 'px';
@@ -99,6 +101,8 @@ if (cursor) {
     el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
     el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
   });
+} else if (cursor && isTouchDevice) {
+  cursor.style.display = 'none';
 }
 
 // ── BEFORE/AFTER SLIDER ──
