@@ -1,0 +1,41 @@
+text-transform: uppercase;
+transition: transform 0.3s, opacity 0.3s;
+.nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+text-transform: uppercase;
+text-transform: uppercase;
+font-size: clamp(4rem, 10vw, 9rem);
+font-size: clamp(0.85rem, 1.5vw, 1rem);
+text-transform: uppercase;
+text-transform: uppercase;
+.btn-ghost::after { content: '→'; transition: transform 0.3s; }
+.btn-ghost:hover::after { transform: translateX(4px); }
+text-transform: uppercase;
+transform-origin: left;
+transform: scaleX(0);
+transform: translateY(-50%);
+font-size: clamp(8rem, 18vw, 18rem);
+text-transform: uppercase;
+font-size: clamp(2.5rem, 5vw, 4.5rem);
+font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+text-transform: uppercase;
+text-transform: uppercase;
+text-transform: uppercase;
+text-transform: uppercase;
+font-size: clamp(2.5rem, 6vw, 5.5rem);
+text-transform: uppercase;
+text-transform: uppercase;
+font-size: clamp(2rem, 3.5vw, 3.5rem);
+text-transform: uppercase;
+text-transform: uppercase;
+text-transform: uppercase;
+transform: translateX(-50%);
+from { opacity: 0; transform: translateY(24px); }
+to { opacity: 1; transform: translateY(0); }
+from { transform: scaleX(0); opacity: 0; }
+to { transform: scaleX(1); opacity: 1; }
+transform: translateY(32px);
+transition: opacity 0.8s ease, transform 0.8s ease;
+transform: translateY(0);
+.hero-title { font-size: clamp(2.3rem, 7.5vw, 3.2rem); line-height: 0.95; }
+.cta-title { font-size: clamp(2rem, 7vw, 2.5rem); }
